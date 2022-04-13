@@ -46,6 +46,12 @@ Scrappy Squirrels is a collection of 10,000 randomly generated NFTs on the Ether
 
 The community is built around learning about the NFT revolution, exploring its current use cases, discovering new applications, and finding members to collaborate on exciting projects with.
 
+For generative art creation: python nft.py
+
+For metadata creation: python metadata.py
+
+For ipfs upload: python uploadToIpfs.py pin_file_to_ipfs "<file_path"
+
 
 
 
