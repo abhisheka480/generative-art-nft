@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 # Base metadata. MUST BE EDITED.
-BASE_IMAGE_URL = "ipfs://Qmnsfbskbfanlnalfnlanflanfobfob"
+BASE_IMAGE_URL = "ipfs://Qme6fD5HpXSJL5qBUWJqA8KkygS4DZc8MsZK36KhYi2664"
 BASE_NAME = "Random"
 
 BASE_JSON = {
@@ -26,10 +26,14 @@ BASE_JSON = {
 
 
 # Get metadata and JSON files path based on edition
-def generate_paths(edition_name):
-    edition_path = os.path.join('output', 'edition ' + str(edition_name))
-    metadata_path = os.path.join(edition_path, 'metadata.csv')
-    json_path = os.path.join(edition_path, 'json')
+def generate_paths(edition_name=None):
+    # edition_path = os.path.join('output', 'edition ' + str(edition_name))
+    # metadata_path = os.path.join(edition_path, 'metadata.csv')
+    # json_path = os.path.join(edition_path, 'json')
+    # edition_path = os.path.join('output', 'edition ' + str(edition_name))
+    edition_path = '/images'
+    metadata_path = os.path.join('/images', 'metadata.csv')
+    json_path = "/json"
 
     return edition_path, metadata_path, json_path
 
@@ -71,8 +75,9 @@ def main():
     # Get edition name
     print("Enter edition you want to generate metadata for: ")
     while True:
-        edition_name = input()
-        edition_path, metadata_path, json_path = generate_paths(edition_name)
+        # edition_name = input()
+        # edition_path, metadata_path, json_path = generate_paths(edition_name)
+        edition_path, metadata_path, json_path = generate_paths()
 
         if os.path.exists(edition_path):
             print("Edition exists! Generating JSON metadata...")

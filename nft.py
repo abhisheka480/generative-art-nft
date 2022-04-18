@@ -160,7 +160,8 @@ def generate_images(edition, count, drop_dup=True):
         rarity_table[layer['name']] = []
 
     # Define output path to output/edition {edition_num}
-    op_path = os.path.join('output', 'edition ' + str(edition), 'images')
+    # op_path = os.path.join('output', 'edition ' + str(edition), 'images')
+    op_path = '/images'
 
     # Will require this to name final images as 000, 001,...
     zfill_count = len(str(count - 1))
@@ -244,8 +245,10 @@ def main():
     rt = generate_images(edition_name, num_avatars)
 
     print("Saving metadata...")
-    rt.to_csv(os.path.join('output', 'edition ' +
-              str(edition_name), 'metadata.csv'))
+    # rt.to_csv(os.path.join('output', 'edition ' +
+    #           str(edition_name), 'metadata.csv'))
+
+    rt.to_csv(os.path.join('/images', 'metadata.csv'))
 
     print("Task complete!")
 
