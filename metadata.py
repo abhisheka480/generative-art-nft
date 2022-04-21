@@ -8,13 +8,14 @@ import os
 from progressbar import progressbar
 import json
 from copy import deepcopy
+import requests
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 # Base metadata. MUST BE EDITED.
-BASE_IMAGE_URL = "ipfs://Qme6fD5HpXSJL5qBUWJqA8KkygS4DZc8MsZK36KhYi2664"
+BASE_IMAGE_URL = "https://ipfs.io/ipfs://Qme6fD5HpXSJL5qBUWJqA8KkygS4DZc8MsZK36KhYi2664"
 BASE_NAME = "Random"
 
 BASE_JSON = {
@@ -93,6 +94,8 @@ def main():
 
     # Get attribute data and zfill count
     df, zfill_count = get_attribute_metadata(metadata_path)
+    # print(df)
+    metadata = []
 
     for idx, row in progressbar(df.iterrows()):
 
@@ -120,6 +123,30 @@ def main():
         item_json_path = os.path.join(json_path, str(idx))
         with open(item_json_path, 'w') as f:
             json.dump(item_json, f)
+        item_json["tokenId"] = str(idx)
+        metadata.append(item_json)
+
+    item_json_path = os.path.join(json_path, "metadata")
+    with open(item_json_path, 'w') as f:
+        json.dump(metadata, f)
+    
+    #store nft traits data in mongodb
+    firebase_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyAdFmFm_2E4VqxPWBvKnmm05AtHmCunMNE"
+    auth_json = {
+        "email": "",
+        "password": "",
+        "returnSecureToken": True
+    }
+    auth_json['email'] = "abhishek1@mailinator.com"
+    auth_json['password'] = "password"
+    r = requests.post(url=firebase_url, json=auth_json)
+    print(r.json())
+    encodedjwt = r.json()["idToken"]
+    request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
+    request_body = { "collectionName": "CRAZY HIPPOS","symbol": "BAYC11","metadata":metadata}
+    response = requests.post(url="http://127.0.0.1:4001/nftTraits", headers=request_headers, json=request_body)
+    print(response)
+    # print(metadata)
 
 
 # Run the main function
