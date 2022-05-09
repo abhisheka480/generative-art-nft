@@ -26,6 +26,12 @@ USER_PASSWORD = os.getenv('USER_PASSWORD')
 COLLECTION_NAME = os.getenv('COLLECTION_NAME')
 SYMBOL = os.getenv('SYMBOL')
 NFT_TRAITS_URL = os.getenv('NFT_TRAITS_URL')
+POX_CONTRACT_ADDRESS = os.getenv('POX_CONTRACT_ADDRESS')
+FORWARDER_CONTRACT_ADDRESS = os.getenv('FORWARDER_CONTRACT_ADDRESS')
+CREATOR_ACCOUNT_ADDRESS = os.getenv('CREATOR_ACCOUNT_ADDRESS')
+GET_NONCE_URL = os.getenv('GET_NONCE_URL')
+UPDATE_CONTRACT_METADATA_URL = os.getenv('UPDATE_CONTRACT_METADATA_URL')
+MINT_MFT_URL = os.getenv('MINT_MFT_URL')
 
 BASE_JSON = {
     "name": BASE_NAME,
@@ -138,8 +144,8 @@ def main():
     item_json_path = os.path.join(json_path, "metadata")
     with open(item_json_path, 'w') as f:
         json.dump(metadata, f)
-    
-    #store nft traits data in mongodb
+
+    # store nft traits data in mongodb
     auth_json = {
         "email": "",
         "password": "",
@@ -147,14 +153,76 @@ def main():
     }
     auth_json['email'] = USER_EMAIL
     auth_json['password'] = USER_PASSWORD
-    r = requests.post(url=FIREBASE_URL, json=auth_json)
-    print(r.json())
-    encodedjwt = r.json()["idToken"]
+    firebase_response = requests.post(url=FIREBASE_URL, json=auth_json)
+    print(firebase_response.json())
+    encodedjwt = firebase_response.json()["idToken"]
     request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
-    request_body = { "collectionName": COLLECTION_NAME,"symbol": SYMBOL,"metadata":metadata}
-    response = requests.post(url=NFT_TRAITS_URL, headers=request_headers, json=request_body)
+
+    request_body = {"collectionName": COLLECTION_NAME,
+                    "symbol": SYMBOL, "metadata": metadata}
+    response = requests.post(
+        url=NFT_TRAITS_URL, headers=request_headers, json=request_body)
     print(response)
     # print(metadata)
+
+    # GET NONCE AND SIGNATURE FOR CREATOR ACCOUNT
+    payload = {
+        'account': CREATOR_ACCOUNT_ADDRESS,
+        'poxContractAddress': POX_CONTRACT_ADDRESS,
+        'customForwarderContractAddress': FORWARDER_CONTRACT_ADDRESS
+    }
+    r = requests.get(GET_NONCE_URL, params=payload)
+    print(r.json())
+
+    # UPDATE METADATA URI IN CONTRACT
+    update_request_body = {
+        "account": CREATOR_ACCOUNT_ADDRESS,
+        "nonce": "", "signature": "", "metadataUri": ""
+    }
+    r = requests.patch(url=UPDATE_CONTRACT_METADATA_URL,
+                       json=update_request_body)
+    print(r.json())
+
+    # GET NONCE AND SIGNATURE FOR CREATOR ACCOUNT
+    payload = {
+        'account': CREATOR_ACCOUNT_ADDRESS,
+        'poxContractAddress': POX_CONTRACT_ADDRESS,
+        'customForwarderContractAddress': FORWARDER_CONTRACT_ADDRESS
+    }
+    r = requests.get(GET_NONCE_URL, params=payload)
+    print(r.json())
+
+    # MINT NFT'S via ngagen api server
+    # mint_nft_request_body = {
+    #     "account": CREATOR_ACCOUNT_ADDRESS,
+    #     "amount": "3",
+    #     "signature": "",
+    #     "nonce": 0,
+    #     "poxContractAddress": POX_CONTRACT_ADDRESS,
+    #     "customForwarderContractAddress": FORWARDER_CONTRACT_ADDRESS
+    # }
+    mint_nft_request_body = {
+        "name": BASE_NAME,
+        "description": COLLECTION_NAME,
+        "priceMap": {"0": 1111, "1": 2222},
+        "currency": "INR",
+        "totalQuantity": 2,
+        "mintMechanism": "BUY",
+        "signature": "",
+        "nonce": 4,
+        "rarity": "UNIQUE",
+        "type": {
+            "value": "COLLECTIBLE",
+            "title": BASE_NAME,
+            "description": COLLECTION_NAME
+        },
+        "networkId": "6191fa723141b277ef5a9883",
+        "collectionName": COLLECTION_NAME,
+    }
+    request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
+    r = requests.post(url=MINT_MFT_URL, headers=request_headers,
+                      json=mint_nft_request_body)
+    print(r.json())
 
 
 # Run the main function
