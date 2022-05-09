@@ -12,8 +12,12 @@ import random
 from progressbar import progressbar
 
 import warnings
+from dotenv import load_dotenv
+
+load_dotenv()
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+OUTPUT_IMAGE_PATH = os.getenv('OUTPUT_IMAGE_PATH')
 
 # Import configuration file
 
@@ -161,7 +165,7 @@ def generate_images(edition, count, drop_dup=True):
 
     # Define output path to output/edition {edition_num}
     # op_path = os.path.join('output', 'edition ' + str(edition), 'images')
-    op_path = '/images'
+    op_path = OUTPUT_IMAGE_PATH
 
     # Will require this to name final images as 000, 001,...
     zfill_count = len(str(count - 1))
@@ -248,7 +252,7 @@ def main():
     # rt.to_csv(os.path.join('output', 'edition ' +
     #           str(edition_name), 'metadata.csv'))
 
-    rt.to_csv(os.path.join('/images', 'metadata.csv'))
+    rt.to_csv(os.path.join(OUTPUT_IMAGE_PATH, 'metadata.csv'))
 
     print("Task complete!")
 

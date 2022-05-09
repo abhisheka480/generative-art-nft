@@ -11,12 +11,21 @@ from copy import deepcopy
 import requests
 
 import warnings
+from dotenv import load_dotenv
+
+load_dotenv()
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-
-# Base metadata. MUST BE EDITED.
-BASE_IMAGE_URL = "https://ipfs.io/ipfs://Qme6fD5HpXSJL5qBUWJqA8KkygS4DZc8MsZK36KhYi2664"
-BASE_NAME = "Random"
+BASE_IMAGE_URL = os.getenv('BASE_IMAGE_URL')
+BASE_NAME = os.getenv('BASE_NAME')
+OUTPUT_IMAGE_PATH = os.getenv('OUTPUT_IMAGE_PATH')
+OUTPUT_METADATA_PATH = os.getenv('OUTPUT_METADATA_PATH')
+FIREBASE_URL = os.getenv('FIREBASE_URL')
+USER_EMAIL = os.getenv('USER_EMAIL')
+USER_PASSWORD = os.getenv('USER_PASSWORD')
+COLLECTION_NAME = os.getenv('COLLECTION_NAME')
+SYMBOL = os.getenv('SYMBOL')
+NFT_TRAITS_URL = os.getenv('NFT_TRAITS_URL')
 
 BASE_JSON = {
     "name": BASE_NAME,
@@ -32,9 +41,9 @@ def generate_paths(edition_name=None):
     # metadata_path = os.path.join(edition_path, 'metadata.csv')
     # json_path = os.path.join(edition_path, 'json')
     # edition_path = os.path.join('output', 'edition ' + str(edition_name))
-    edition_path = '/images'
-    metadata_path = os.path.join('/images', 'metadata.csv')
-    json_path = "/json"
+    edition_path = OUTPUT_IMAGE_PATH
+    metadata_path = os.path.join(OUTPUT_IMAGE_PATH, 'metadata.csv')
+    json_path = OUTPUT_METADATA_PATH
 
     return edition_path, metadata_path, json_path
 
@@ -131,20 +140,19 @@ def main():
         json.dump(metadata, f)
     
     #store nft traits data in mongodb
-    firebase_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyAdFmFm_2E4VqxPWBvKnmm05AtHmCunMNE"
     auth_json = {
         "email": "",
         "password": "",
         "returnSecureToken": True
     }
-    auth_json['email'] = "abhishek1@mailinator.com"
-    auth_json['password'] = "password"
-    r = requests.post(url=firebase_url, json=auth_json)
+    auth_json['email'] = USER_EMAIL
+    auth_json['password'] = USER_PASSWORD
+    r = requests.post(url=FIREBASE_URL, json=auth_json)
     print(r.json())
     encodedjwt = r.json()["idToken"]
     request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
-    request_body = { "collectionName": "CRAZY HIPPOS","symbol": "BAYC11","metadata":metadata}
-    response = requests.post(url="http://127.0.0.1:4001/nftTraits", headers=request_headers, json=request_body)
+    request_body = { "collectionName": COLLECTION_NAME,"symbol": SYMBOL,"metadata":metadata}
+    response = requests.post(url=NFT_TRAITS_URL, headers=request_headers, json=request_body)
     print(response)
     # print(metadata)
 

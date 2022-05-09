@@ -3,6 +3,9 @@ import os
 import typing as tp
 import requests
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Custom tpe hints
 ResponsePayload = tp.Dict[str, tp.Any]
@@ -10,8 +13,9 @@ OptionsDict = tp.Dict[str, tp.Any]
 Headers = tp.Dict[str, str]
 
 # global constants
-API_ENDPOINT = "https://api.pinata.cloud/"
-
+PINATA_URL = os.getenv('PINATA_URL')
+PINATA_API_KEY = os.getenv('PINATA_API_KEY')
+PINATA_SECRET_API_KEY = os.getenv('PINATA_SECRET_API_KEY')
 
 # def get_all_files(directory: str) -> tp.List[str]:
 #     """get a list of absolute paths to every file located in the directory"""
@@ -49,13 +53,13 @@ def pin_file_to_ipfs(path_to_file, options=None):
     Pin any file, or directory, to Pinata's IPFS nodes
     More: https://docs.pinata.cloud/api-pinning/pin-file
     """
-    url = API_ENDPOINT + "pinning/pinFileToIPFS"
+    url = PINATA_URL
     # headers = {k: self._auth_headers[k] for k in [
     #     pinataKeys.PINATA_API_KEY, pinataKeys.PINATA_SECRET_KEY]}
 
     headers = {
-        "pinata_api_key": "2a7d204839bcc301e49e",
-        "pinata_secret_api_key": "23a6ca2ccddd40128c704b0e5d8c327463709e2769eedc60c984f11e36c8d989",
+        "pinata_api_key": PINATA_API_KEY,
+        "pinata_secret_api_key": PINATA_SECRET_API_KEY,
     }
 
     files = tp.List[tp.Any]
