@@ -67,6 +67,10 @@ PINATA_SECRET_API_KEY
 
 For generative art creation: python nft.py
 
+For ipfs upload: python uploadToIpfs.py pin_file_to_ipfs "<file_path"
+
 For metadata creation: python metadata.py
 
 For ipfs upload: python uploadToIpfs.py pin_file_to_ipfs "<file_path"
+
+For minting: python3 mint.py

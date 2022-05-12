@@ -35,7 +35,7 @@ MINT_MFT_URL = os.getenv('MINT_MFT_URL')
 
 BASE_JSON = {
     "name": BASE_NAME,
-    "description": "My custom collection",
+    "description": "Crazy squirrels 3 collection comprising of unique 90 squirrel avatars",
     "image": BASE_IMAGE_URL,
     "attributes": [],
 }
@@ -164,65 +164,6 @@ def main():
         url=NFT_TRAITS_URL, headers=request_headers, json=request_body)
     print(response)
     # print(metadata)
-
-    # GET NONCE AND SIGNATURE FOR CREATOR ACCOUNT
-    payload = {
-        'account': CREATOR_ACCOUNT_ADDRESS,
-        'poxContractAddress': POX_CONTRACT_ADDRESS,
-        'customForwarderContractAddress': FORWARDER_CONTRACT_ADDRESS
-    }
-    r = requests.get(GET_NONCE_URL, params=payload)
-    print(r.json())
-
-    # UPDATE METADATA URI IN CONTRACT
-    update_request_body = {
-        "account": CREATOR_ACCOUNT_ADDRESS,
-        "nonce": "", "signature": "", "metadataUri": ""
-    }
-    r = requests.patch(url=UPDATE_CONTRACT_METADATA_URL,
-                       json=update_request_body)
-    print(r.json())
-
-    # GET NONCE AND SIGNATURE FOR CREATOR ACCOUNT
-    payload = {
-        'account': CREATOR_ACCOUNT_ADDRESS,
-        'poxContractAddress': POX_CONTRACT_ADDRESS,
-        'customForwarderContractAddress': FORWARDER_CONTRACT_ADDRESS
-    }
-    r = requests.get(GET_NONCE_URL, params=payload)
-    print(r.json())
-
-    # MINT NFT'S via ngagen api server
-    # mint_nft_request_body = {
-    #     "account": CREATOR_ACCOUNT_ADDRESS,
-    #     "amount": "3",
-    #     "signature": "",
-    #     "nonce": 0,
-    #     "poxContractAddress": POX_CONTRACT_ADDRESS,
-    #     "customForwarderContractAddress": FORWARDER_CONTRACT_ADDRESS
-    # }
-    mint_nft_request_body = {
-        "name": BASE_NAME,
-        "description": COLLECTION_NAME,
-        "priceMap": {"0": 1111, "1": 2222},
-        "currency": "INR",
-        "totalQuantity": 2,
-        "mintMechanism": "BUY",
-        "signature": "",
-        "nonce": 4,
-        "rarity": "UNIQUE",
-        "type": {
-            "value": "COLLECTIBLE",
-            "title": BASE_NAME,
-            "description": COLLECTION_NAME
-        },
-        "networkId": "6191fa723141b277ef5a9883",
-        "collectionName": COLLECTION_NAME,
-    }
-    request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
-    r = requests.post(url=MINT_MFT_URL, headers=request_headers,
-                      json=mint_nft_request_body)
-    print(r.json())
 
 
 # Run the main function
