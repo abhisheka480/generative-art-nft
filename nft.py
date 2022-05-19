@@ -73,11 +73,19 @@ def generate_single_image(filepaths, output_filename=None):
 
     # Treat the first layer as the background
     bg = Image.open(os.path.join('assets', filepaths[0]))
+    width, height = bg.size
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    print("BG SIZE:", width, height)
 
     # Loop through layers 1 to n and stack them on top of another
     for filepath in filepaths[1:]:
         if filepath.endswith('.png'):
             img = Image.open(os.path.join('assets', filepath))
+            width, height = img.size
+            print("FILEPATH:", filepath)
+            print(
+                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+            print("IMG SIZE:", width, height)
             bg.paste(img, (0, 0), img)
 
     # Save the final image into desired location
