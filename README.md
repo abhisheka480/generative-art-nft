@@ -69,6 +69,8 @@ For generative art creation: python nft.py
 
 For ipfs upload: python uploadToIpfs.py pin_file_to_ipfs "<file_path"
 
+For firebase upload: python uploadToFirebase.py
+
 For metadata creation: python metadata.py
 
 For ipfs upload: python uploadToIpfs.py pin_file_to_ipfs "<file_path"
