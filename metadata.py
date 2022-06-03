@@ -32,10 +32,11 @@ CREATOR_ACCOUNT_ADDRESS = os.getenv('CREATOR_ACCOUNT_ADDRESS')
 GET_NONCE_URL = os.getenv('GET_NONCE_URL')
 UPDATE_CONTRACT_METADATA_URL = os.getenv('UPDATE_CONTRACT_METADATA_URL')
 MINT_MFT_URL = os.getenv('MINT_MFT_URL')
+COLLECTION_DESCRIPTION = os.getenv('COLLECTION_DESCRIPTION')
 
 BASE_JSON = {
     "name": BASE_NAME,
-    "description": "Crazy squirrels 3 collection comprising of unique 90 squirrel avatars",
+    "description": COLLECTION_DESCRIPTION,
     "image": BASE_IMAGE_URL,
     "attributes": [],
 }

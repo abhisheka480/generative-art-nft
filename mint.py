@@ -1,4 +1,5 @@
 import os
+import ast
 import time
 import typing as tp
 import requests
@@ -26,6 +27,10 @@ METADATA_IPFS_URL = os.getenv('METADATA_IPFS_URL')
 CREATOR_PRIVATE_KEY = os.getenv('CREATOR_PRIVATE_KEY')
 COLLECTION_SIZE = os.getenv('COLLECTION_SIZE')
 COLLECTION_PRICE = os.getenv("COLLECTION_PRICE")
+FIREBASE_ASSETURL = os.getenv("FIREBASE_ASSETURL")
+FILEARRAY = os.getenv('FILEARRAY')
+
+filearray = ast.literal_eval(FILEARRAY)
 
 
 def main():
@@ -46,6 +51,8 @@ def main():
                        json=update_request_body)
     print(r.json())
 
+    time.sleep(20)
+
     loops = 0
     minted = 0
     mintAmount = 0
@@ -58,14 +65,17 @@ def main():
     for k in range(int(loops)):
         nonce, signature = get_nonce(
             CREATOR_ACCOUNT_ADDRESS, POX_CONTRACT_ADDRESS, FORWARDER_CONTRACT_ADDRESS)
+        time.sleep(20)
         if k == int(loops) - 1:
             mintAmount = int(COLLECTION_SIZE) - minted
         priceMap = get_price_map(
             (mintAmount + minted), COLLECTION_PRICE, minted)
+        fileArray = get_file_array((mintAmount + minted), minted)
         mint_nft_request_body = {
             "name": BASE_NAME,
             "description": COLLECTION_NAME,
             "priceMap": priceMap,
+            "fileArray": fileArray,
             "currency": "INR",
             # "totalQuantity": int(COLLECTION_SIZE),
             "totalQuantity": mintAmount,
@@ -80,14 +90,19 @@ def main():
             },
             "networkId": "6191fa723141b277ef5a9883",
             "collectionName": COLLECTION_NAME,
+            "originalAssetUrl": FIREBASE_ASSETURL,
+            "metadata": {
+                "mediaType": "image"
+            },
         }
         encodedjwt = get_firebase_token()
         request_headers = {"Authorization": "Bearer {}".format(encodedjwt)}
+        time.sleep(10)
         r = requests.post(url=MINT_MFT_URL, headers=request_headers,
                           json=mint_nft_request_body)
         print(r.json())
         minted += mintAmount
-        time.sleep(20)  # Sleep for 20 seconds
+        time.sleep(30)  # Sleep for 30 seconds
 
 
 def get_nonce(creator_address, pox_address, forwarder_address):
@@ -120,6 +135,13 @@ def get_price_map(size, price, mintedIndex):
         priceMap[str(i)] = int(price)
     print(priceMap)
     return priceMap
+
+
+def get_file_array(size, mintedIndex):
+    filearr = []
+    filearr = filearray[int(mintedIndex):(int(mintedIndex) + int(size))]
+    print(filearr)
+    return filearr
 
 
 def get_firebase_token():
